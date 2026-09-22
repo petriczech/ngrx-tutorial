@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { increment, decrement, reset } from './counter.actions';
 import { LogEntry } from './reducers/log.reducer';
+import { selectCount, selectDigits, selectLog } from './reducers';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,11 +20,9 @@ export class AppComponent {
   log$: Observable<LogEntry[]>;
 
   constructor() {
-    this.count$ = this.store.select('counter');
-    this.digits$ = this.count$.pipe(
-      map((count) => Math.abs(count).toString().padStart(4, '0').split('').map(Number))
-    );
-    this.log$ = this.store.select('log');
+    this.count$ = this.store.select(selectCount);
+    this.digits$ = this.store.select(selectDigits);
+    this.log$ = this.store.select(selectLog);
   }
 
   increment() {
