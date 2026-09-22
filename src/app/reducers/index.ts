@@ -19,5 +19,12 @@ export const reducers: ActionReducerMap<State> = {
   log: logReducer,
 };
 
+export const selectCount = createFeatureSelector<number>('counter');
+
+export const selectLog = createFeatureSelector<LogEntry[]>('log');
+
+export const selectDigits = createSelector(selectCount, (count) =>
+  Math.abs(count).toString().padStart(4, '0').split('').map(Number)
+);
 
 export const metaReducers: MetaReducer<State>[] = isDevMode() ? [] : [];
