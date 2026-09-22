@@ -1,0 +1,68 @@
+@let count = (count$ | async) ?? 0;
+@let digits = (digits$ | async) ?? [];
+@let log = (log$ | async) ?? [];
+
+<main class="bench">
+
+  <section class="instrument">
+    <h1 class="engraving">counter</h1>
+
+    <div class="window" role="status">
+      <span class="sr">Current Count: {{ count }}</span>
+
+      <span class="drum drum--sign" [class.drum--on]="count < 0" aria-hidden="true">
+        <span class="strip strip--sign" [style.transform]="count < 0 ? 'translateY(-50%)' : 'none'">
+          <b></b><b>&#8722;</b>
+        </span>
+      </span>
+
+      @for (digit of digits; track $index) {
+        <span class="drum" aria-hidden="true">
+          <span
+            class="strip"
+            [style.transform]="'translateY(' + digit * -10 + '%)'"
+            [style.transitionDelay.ms]="(digits.length - 1 - $index) * 22">
+            <b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b>
+          </span>
+        </span>
+      }
+    </div>
+
+    <div class="keys">
+      <button type="button" class="key" (click)="decrement()">
+        <span class="key__glyph" aria-hidden="true">&#8722;</span>
+        <span class="key__word">Decrement</span>
+      </button>
+
+      <button type="button" class="key" (click)="increment()">
+        <span class="key__glyph" aria-hidden="true">+</span>
+        <span class="key__word">Increment</span>
+      </button>
+
+      <button type="button" class="key key--reset" (click)="reset()">
+        <span class="key__glyph" aria-hidden="true">&#8634;</span>
+        <span class="key__word">Reset Counter</span>
+      </button>
+    </div>
+  </section>
+
+  <aside class="tape">
+    <header class="tape__head">
+      <span>dispatched actions</span>
+      <span>{{ log[0]?.id ?? 0 }}</span>
+    </header>
+
+    <ol class="tape__roll">
+      @for (entry of log; track entry.id) {
+        <li class="line">
+          <span class="line__no">{{ entry.id }}</span>
+          <span class="line__name">{{ entry.name }}</span>
+          <span class="line__delta">{{ entry.delta > 0 ? '+' : '' }}{{ entry.delta }}</span>
+        </li>
+      } @empty {
+        <li class="line line--empty">Nothing dispatched yet. Press a key to start the tape.</li>
+      }
+    </ol>
+  </aside>
+
+</main>
